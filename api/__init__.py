@@ -1,1 +1,3 @@
-from .health_api import register_health_api
+from .health_api import HealthApi
+from .organization_api import OrganizationApi
+from .user_api import UserApi

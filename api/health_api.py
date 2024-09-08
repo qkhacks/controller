@@ -1,10 +1,14 @@
 from flask import Flask
 
 
-def register_health_api(app: Flask):
+class HealthApi:
 
-    @app.get("/health")
-    def health_check():
-        return {
-            "status": "ok"
-        }
+    def __init__(self, app: Flask):
+        self.app = app
+
+    def register(self):
+        @self.app.get("/health")
+        def health_check():
+            return {
+                "status": "ok"
+            }

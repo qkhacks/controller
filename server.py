@@ -4,6 +4,7 @@ from dotenv import *
 from flask import Flask, request, jsonify, g
 
 from api import *
+from lib.identity import *
 
 app = Flask(__name__)
 load_dotenv()
@@ -11,7 +12,12 @@ load_dotenv()
 jwt_signing_key = os.getenv("JWT_SIGNING_KEY")
 db = pymongo.MongoClient(os.getenv("DB_HOST"), int(os.getenv("DB_PORT"))).controller
 
-register_health_api(app)
+organization_service = OrganizationService(db.organizations)
+user_service = UserService(db.users, organization_service, jwt_signing_key)
+
+HealthApi(app).register()
+OrganizationApi(app, organization_service).register()
+UserApi(app, user_service).register()
 
 
 @app.before_request

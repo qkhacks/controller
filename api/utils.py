@@ -60,3 +60,7 @@ def authenticate_user(f):
         return f(current_user, *args, **kwargs)
 
     return decorated
+
+def check_admin(user):
+    if not user["admin"]:
+        raise Exception("Not allowed")
