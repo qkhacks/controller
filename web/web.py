@@ -14,3 +14,11 @@ class Web:
         @self.app.get("/join")
         def join():
             return render_template("join.html")
+
+        @self.app.get("/login")
+        def login():
+            return render_template("login.html")
+
+        @self.app.get("/logout")
+        def logout():
+            return render_template("logout.html")

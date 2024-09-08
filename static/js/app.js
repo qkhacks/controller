@@ -37,3 +37,19 @@ function signUp(username, password, organizationName, success, error) {
         error: error
     });
 }
+
+function getToken(username, password, organizationName, success, error) {
+    $.ajax({
+        url: "/api/v1/users/token",
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json",
+        data: JSON.stringify({
+            username: username,
+            password: password,
+            organization_name: organizationName
+        }),
+        success: success,
+        error: error
+    });
+}
