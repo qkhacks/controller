@@ -10,4 +10,7 @@ class Web:
         @self.app.get("/")
         def index():
             return render_template("index.html")
-    
+
+        @self.app.get("/join")
+        def join():
+            return render_template("join.html")
