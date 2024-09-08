@@ -145,6 +145,19 @@ class UserService:
 
         return result
 
+    def fetch_by_ids(self, user_ids: list[str]) -> list[dict]:
+        ids = []
+        for user_id in user_ids:
+            ids.append(ObjectId(user_id))
+        users = self.mongo.find({
+            "_id": {"$in": ids}
+        })
+
+        result = []
+        for user in users:
+            result.append(self.to_dict(user))
+        return result
+
     def get_by_organization(self, user_id: str, organization_id: str) -> dict:
         user = self.mongo.find_one({
             "_id": ObjectId(user_id),
