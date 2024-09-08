@@ -22,3 +22,7 @@ class Web:
         @self.app.get("/logout")
         def logout():
             return render_template("logout.html")
+
+        @self.app.get("/home")
+        def home():
+            return render_template("home.html")
