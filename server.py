@@ -6,6 +6,7 @@ from flask import Flask, request, jsonify, g
 from api import *
 from lib.identity import *
 from lib.project import ProjectService, ProjectAccessService
+from web import *
 
 app = Flask(__name__)
 load_dotenv()
@@ -23,6 +24,7 @@ OrganizationApi(app, organization_service).register()
 UserApi(app, user_service).register()
 ProjectApi(app, project_service).register()
 
+Web(app).register()
 
 @app.before_request
 def before_request():
