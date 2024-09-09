@@ -26,3 +26,7 @@ class Web:
         @self.app.get("/home")
         def home():
             return render_template("home.html")
+
+        @self.app.get("/account")
+        def account():
+            return render_template("account.html")
