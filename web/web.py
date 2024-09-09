@@ -30,3 +30,7 @@ class Web:
         @self.app.get("/account")
         def account():
             return render_template("account.html")
+
+        @self.app.get("/organization")
+        def organization():
+            return render_template("organization.html")

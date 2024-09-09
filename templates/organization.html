@@ -5,7 +5,7 @@
     <meta content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
           name="viewport">
     <meta content="ie=edge" http-equiv="X-UA-Compatible">
-    <title>Account Settings - Silicate Cloud</title>
+    <title>Organization Settings - Silicate Cloud</title>
     <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="/static/awesomplete/awesomplete.css" rel="stylesheet">
     <link href="/static/css/app.css" rel="stylesheet">
@@ -26,7 +26,9 @@
         <div class="collapse navbar-collapse" id="navbar">
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="/">Home</a>
+                    <a class="nav-link active" href="/">Home
+                        <span class="visually-hidden">(current)</span>
+                    </a>
                 </li>
             </ul>
             <div class="d-flex">
@@ -48,40 +50,16 @@
     </div>
 </nav>
 <div class="container">
-    <div class="row" style="margin-top: 5rem;">
+    <div class="row" style="margin-top: 7rem;">
         <div class="col-lg-4 offset-lg-4">
             <div class="card">
                 <div class="card-body">
-                    <h3>Basic Information</h3>
+                    <h3>Organization Settings</h3>
                     <hr>
                     <form>
                         <div class="mb-3 form-floating">
-                            <input type="text" class="form-control" id="username" placeholder="Username" disabled>
-                            <label for="username">Username</label>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row" style="margin-top: 1rem;">
-        <div class="col-lg-4 offset-lg-4">
-            <div class="card">
-                <div class="card-body">
-                    <h3>Change Password</h3>
-                    <hr>
-                    <form>
-                        <div id="change-password-message"></div>
-                        <div class="mb-3 form-floating">
-                            <input type="password" class="form-control" id="new-password" placeholder="New Password">
-                            <label for="new-password">New Password</label>
-                        </div>
-                        <div class="mb-3 form-floating">
-                            <input type="password" class="form-control" id="confirm-new-password" placeholder="Confirm New Password">
-                            <label for="confirm-new-password">Confirm New Password</label>
-                        </div>
-                        <div class="mb-3">
-                            <button class="btn btn-primary w-100" id="change-password-btn">Change Password</button>
+                            <input type="text" class="form-control" id="name" placeholder="Organization Name" disabled>
+                            <label for="name">Organization Name</label>
                         </div>
                     </form>
                 </div>
@@ -96,31 +74,8 @@
 <script src="/static/js/app.js" type="text/javascript"></script>
 <script type="text/javascript">
     $(document).ready(function () {
-        getCurrentUser(function (data) {
-            $("#username").val(data.username);
-        });
-
-        $("#change-password-btn").click(function (e) {
-            e.preventDefault();
-
-            let newPassword = $("#new-password").val();
-            let confirmNewPassword = $("#confirm-new-password").val();
-
-            if (newPassword === "") {
-                displayError($("#change-password-message"), "New password cannot be empty");
-                return;
-            }
-
-            if (newPassword !== confirmNewPassword) {
-                displayError($("#change-password-message"), "Passwords do not match");
-                return;
-            }
-
-            changeCurrentUserPassword(newPassword, function (data) {
-                displaySuccess($("#change-password-message"), "Password changed successfully");
-            }, function (data) {
-                displayError($("#change-password-message"), data.responseJSON.message);
-            });
+        getOrganization(function (data) {
+            $("#name").val(data.name);
         });
     });
 </script>

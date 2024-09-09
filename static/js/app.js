@@ -80,3 +80,15 @@ function changeCurrentUserPassword(password, success, error) {
         error: error
     });
 }
+
+function getOrganization(success, error) {
+    $.ajax({
+        url: "/api/v1/organization",
+        type: "GET",
+        dataType: "json",
+        contentType: "application/json",
+        headers: getHeaders(),
+        success: success,
+        error: error
+    })
+}
