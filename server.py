@@ -22,6 +22,7 @@ project_access_service = ProjectAccessService(db.project_accesses)
 project_service = ProjectService(db.projects, project_access_service, user_service)
 region_service = RegionService(db.regions, project_access_service)
 data_center_service = DataCenterService(db.data_centers, region_service, project_access_service)
+machine_key_service = MachineKeyService(db.machine_keys, project_access_service)
 
 HealthApi(app).register()
 OrganizationApi(app, organization_service).register()
@@ -29,6 +30,7 @@ UserApi(app, user_service).register()
 ProjectApi(app, project_service).register()
 DataCenterApi(app, data_center_service).register()
 RegionApi(app, region_service).register()
+MachineKeyApi(app, machine_key_service).register()
 
 Web(app).register()
 
