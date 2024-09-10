@@ -1,24 +1,32 @@
 from bson import ObjectId
 from pymongo.collection import Collection
 from datetime import datetime
+
+from .region_service import RegionService
 from lib.project import ProjectAccessService
 
 
 class DataCenterService:
-    def __init__(self, mongo: Collection, project_access_service: ProjectAccessService):
+    def __init__(self, mongo: Collection, region_service: RegionService, project_access_service: ProjectAccessService):
         self.mongo = mongo
+        self.region_service = region_service
         self.project_access_service = project_access_service
 
-    def create(self, name: str, description: str, project_id: str, creator_id: str, organization_id: str):
+    def create(self, name: str, description: str, region_id: str, project_id: str, creator_id: str,
+               organization_id: str):
         if not self.project_access_service.has_access(project_id, creator_id, "infra.datacenter.admin"):
             raise Exception("Not allowed")
 
         if self.name_exists(name, project_id):
             raise Exception(f"Data center {name} already exists in this project")
 
+        if not self.region_service.exists(region_id, project_id):
+            raise Exception("Region not found")
+
         data_center_id = self.mongo.insert_one({
             "name": name,
             "description": description,
+            "region_id": region_id,
             "project_id": project_id,
             "creator_id": creator_id,
             "organization_id": organization_id,
@@ -30,11 +38,12 @@ class DataCenterService:
             "id": str(data_center_id),
         }
 
-    def fetch(self, project_id: str, requester_id: str, page: int = 0, size: int = 50) -> list[dict]:
+    def fetch(self, region_id: str, project_id: str, requester_id: str, page: int = 0, size: int = 50) -> list[dict]:
         if self.project_access_service.has_any_access(project_id, requester_id):
             raise Exception("Project not found")
 
         data_centers = self.mongo.find({
+            "region_id": region_id,
             "project_id": project_id
         }).skip(page * size).limit(size)
 
@@ -45,12 +54,13 @@ class DataCenterService:
 
         return result
 
-    def get(self, data_center_id: str, project_id: str, requester_id: str) -> dict:
+    def get(self, data_center_id: str, region_id: str, project_id: str, requester_id: str) -> dict:
         if not self.project_access_service.has_any_access(project_id, requester_id):
             raise Exception("Project not found")
 
         data_center = self.mongo.find_one({
             "_id": ObjectId(data_center_id),
+            "region_id": region_id,
             "project_id": project_id
         })
 
@@ -59,7 +69,8 @@ class DataCenterService:
 
         return self.to_dict(data_center)
 
-    def update(self, data_center_id: str, name: str, description: str, project_id: str, requester_id: str):
+    def update(self, data_center_id: str, name: str, description: str, region_id: str, project_id: str,
+               requester_id: str):
         if not self.project_access_service.has_access(project_id, requester_id, "infra.datacenter.admin"):
             raise Exception("Project not found")
 
@@ -80,6 +91,7 @@ class DataCenterService:
 
         result = self.mongo.update_one({
             "_id": ObjectId(data_center_id),
+            "region_id": region_id,
             "project_id": project_id,
         }, {
             "$set": fields
@@ -92,12 +104,13 @@ class DataCenterService:
             "id": data_center_id,
         }
 
-    def delete(self, data_center_id: str, project_id: str, requester_id: str) -> dict:
+    def delete(self, data_center_id: str, region_id: str, project_id: str, requester_id: str) -> dict:
         if not self.project_access_service.has_access(project_id, requester_id, "infra.datacenter.admin"):
             raise Exception("Project not found")
 
         result = self.mongo.delete_one({
             "_id": ObjectId(data_center_id),
+            "region_id": region_id,
             "project_id": project_id
         })
 

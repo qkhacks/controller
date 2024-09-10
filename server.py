@@ -4,6 +4,7 @@ from dotenv import *
 from flask import Flask, request, jsonify, g
 
 from api import *
+from api.region_api import RegionApi
 from lib.identity import *
 from lib.project import *
 from lib.infra import *
@@ -19,15 +20,18 @@ organization_service = OrganizationService(db.organizations)
 user_service = UserService(db.users, organization_service, jwt_signing_key)
 project_access_service = ProjectAccessService(db.project_accesses)
 project_service = ProjectService(db.projects, project_access_service, user_service)
-data_center_service = DataCenterService(db.data_centers, project_access_service)
+region_service = RegionService(db.regions, project_access_service)
+data_center_service = DataCenterService(db.data_centers, region_service, project_access_service)
 
 HealthApi(app).register()
 OrganizationApi(app, organization_service).register()
 UserApi(app, user_service).register()
 ProjectApi(app, project_service).register()
 DataCenterApi(app, data_center_service).register()
+RegionApi(app, region_service).register()
 
 Web(app).register()
+
 
 @app.before_request
 def before_request():
